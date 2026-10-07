@@ -1,5 +1,5 @@
 class Libneurosuite < Formula
-  desc "Library shared by the Neurosuite applications NeuroScope, Klusters and NDManager"
+  desc "Library shared by NeuroScope, Klusters and NDManager"
   homepage "https://neurosuite.github.io"
   url "https://github.com/neurosuite/libneurosuite/archive/refs/tags/v3.0.0-rc1.tar.gz"
   version "3.0.0-rc1"
@@ -36,7 +36,7 @@ class Libneurosuite < Formula
         return 0;
       }
     CPP
-    system "cmake", "-S", ".", "-B", "build", "-DCMAKE_PREFIX_PATH=#{Formula["qtbase"].opt_prefix}"
+    system "cmake", "-S", ".", "-B", "build", "-DCMAKE_PREFIX_PATH=#{formula_opt_prefix("qtbase")}"
     system "cmake", "--build", "build"
     ENV["QT_QPA_PLATFORM"] = "offscreen"
     system "./build/consumer"

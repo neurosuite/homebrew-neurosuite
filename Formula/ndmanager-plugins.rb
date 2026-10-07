@@ -1,7 +1,7 @@
 class NdmanagerPlugins < Formula
   include Language::Python::Shebang
 
-  desc "Processing tools and scripts for NDManager (filtering, spike extraction, PCA, LEDs)"
+  desc "Processing tools for NDManager: filtering, spike extraction, PCA and more"
   homepage "https://neurosuite.github.io"
   url "https://github.com/neurosuite/ndmanager-plugins/archive/refs/tags/v3.0.0-rc1.tar.gz"
   version "3.0.0-rc1"
@@ -26,7 +26,7 @@ class NdmanagerPlugins < Formula
 
   def install
     system "cmake", "-S", ".", "-B", "build", "-G", "Ninja",
-                    "-DCMAKE_PREFIX_PATH=#{Formula["libxml2"].opt_prefix}", *std_cmake_args
+                    "-DCMAKE_PREFIX_PATH=#{formula_opt_prefix("libxml2")}", *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
     # The PyQt6 tools must run with the Python that pyqt is installed for.
@@ -42,13 +42,13 @@ class NdmanagerPlugins < Formula
 
   test do
     # A white 8x8 spot moving over a black background, as a stand-in for an LED.
-    system Formula["ffmpeg"].opt_bin/"ffmpeg", "-loglevel", "error",
+    system formula_opt_bin("ffmpeg")/"ffmpeg", "-loglevel", "error",
            "-f", "lavfi", "-i", "color=black:s=320x240:r=25:d=2",
            "-f", "lavfi", "-i", "color=white:s=8x8:r=25:d=2",
            "-filter_complex", "[0][1]overlay=x=200:y=150-t*30",
            "-c:v", "mpeg4", "-q:v", "2", "test.avi"
     system bin/"process_extractleds", "-t", "90", "test.avi"
     assert_equal 51, (testpath/"test.spots").read.lines.count
-    system Formula["python@3.14"].opt_bin/"python3.14", "-c", "import PyQt6.QtWidgets"
+    system formula_opt_bin("python@3.14")/"python3.14", "-c", "import PyQt6.QtWidgets"
   end
 end
