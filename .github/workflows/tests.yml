@@ -17,8 +17,9 @@ jobs:
         run: brew style neurosuite/neurosuite
       - name: Build and test
         run: |
-          # The runner image links openssl@1.1, which blocks linking openssl@3.
-          brew unlink openssl@1.1 || true
+          # The runner image has leftover links into openssl@1.1 (no longer a formula, so
+          # brew unlink cannot remove them). They block linking openssl@3.
+          find "$(brew --prefix)" -maxdepth 4 -lname '*openssl@1.1*' -print -delete
           for formula in libneurosuite neuroscope klusters ndmanager ndmanager-plugins; do
             brew install --overwrite --only-dependencies neurosuite/neurosuite/$formula
             brew install --build-from-source --verbose neurosuite/neurosuite/$formula
