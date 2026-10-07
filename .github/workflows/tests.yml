@@ -1,6 +1,7 @@
 name: Tests
 
-# Builds every formula from source and runs its test on macOS (Apple silicon).
+# Builds every formula from source and runs its test on macOS 15 (Apple silicon).
+# Homebrew no longer provides bottles for macOS 14, so dependencies would be built there too.
 on:
   push:
   pull_request:
@@ -9,7 +10,7 @@ on:
 jobs:
   formulae:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: Homebrew/actions/setup-homebrew@main
       - name: Check style
