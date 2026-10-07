@@ -1,0 +1,22 @@
+name: Tests
+
+# Builds every formula from source and runs its test on macOS (Apple silicon).
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  formulae:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: macos-14
+    steps:
+      - uses: Homebrew/actions/setup-homebrew@main
+      - name: Check style
+        run: brew style neurosuite/neurosuite
+      - name: Build and test
+        run: |
+          for formula in libneurosuite neuroscope klusters ndmanager ndmanager-plugins; do
+            brew install --build-from-source --verbose neurosuite/neurosuite/$formula
+            brew test --verbose neurosuite/neurosuite/$formula
+          done
